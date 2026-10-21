@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant C as Client
+    participant API as Application/Authorization API
+    participant DB as Credential Store
+    C->>API: Login
+    API->>DB: Verify account/password
+    API-->>C: Short-lived access token + refresh credential
+    C->>API: Request resource with access token
+    API->>API: Validate signature/claims/policy
+    API-->>C: Protected response
+    C->>API: Refresh credential (only refresh endpoint)
+    API->>DB: Validate active credential/session
+    API->>DB: Atomically rotate/revoke old credential
+    API-->>C: New access token + replacement refresh credential
