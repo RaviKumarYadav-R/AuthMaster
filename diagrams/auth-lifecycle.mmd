@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant B as Browser
+    participant A as Application API
+    participant D as Database/Session Store
+    B->>A: POST /auth/login (credentials over HTTPS)
+    A->>D: Find account
+    D-->>A: Account + password hash
+    A->>A: Verify password
+    A->>D: Create server-side session
+    D-->>A: Session stored
+    A-->>B: Set-Cookie (HttpOnly, Secure in production, SameSite)
+    B->>A: GET /auth/me + eligible cookie
+    A->>D: Validate/load session
+    D-->>A: Session + user ID
+    A-->>B: User profile (never password hash)
+    B->>A: POST /auth/logout
+    A->>D: Invalidate session
+    A-->>B: Clear cookie + success
