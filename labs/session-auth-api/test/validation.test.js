@@ -15,3 +15,22 @@ test('rejects malformed email', () => {
 test('rejects a short password', () => {
   assert.equal(parseCredentials({ email: 'ravi@example.com', password: 'short' }).success, false);
 });
+
+test('rejects a password longer than the configured maximum', () => {
+  assert.equal(parseCredentials({ email: 'ravi@example.com', password: 'x'.repeat(129) }).success, false);
+});
+
+test('rejects missing or non-object input', () => {
+  assert.equal(parseCredentials(undefined).success, false);
+  assert.equal(parseCredentials(null).success, false);
+  assert.equal(parseCredentials('email=ravi@example.com').success, false);
+});
+
+test('rejects unexpected fields such as a client-supplied role', () => {
+  const result = parseCredentials({
+    email: 'ravi@example.com',
+    password: 'a-very-long-demo-password',
+    role: 'admin',
+  });
+  assert.equal(result.success, false);
+});
