@@ -38,3 +38,15 @@ Use these examples in code reviews and teaching sessions. Each applicable item s
 
 ## Review exercise
 Choose five patterns, explain an attack scenario, identify the trust boundary, propose a mitigation, and write a regression test.
+
+## Deep dive: diagnose the violated invariant
+
+### Common failures
+Plaintext password storage; logging credentials; trusting a decoded JWT; skipping session rotation; clearing a cookie without server-side invalidation; using in-memory stores in multi-instance production; treating CORS as authorization; trusting client-supplied role/owner/tenant IDs; reusable reset tokens; stack-trace leakage; happy-path-only testing; UI-only route guards; and external account linking based only on email.
+
+### Root-cause method
+For each failure, identify the violated invariant, misunderstood trust boundary, missing test, and operational signal that could detect recurrence. Fix the underlying design rather than only the observed symptom.
+
+### Exercise
+Choose five failures. For each, write a bad-versus-corrected example, a negative test, and a short code-review explanation. Use synthetic data and keep deliberately vulnerable examples isolated from public deployment.
+
