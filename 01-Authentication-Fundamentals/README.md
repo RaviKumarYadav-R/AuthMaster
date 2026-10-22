@@ -49,3 +49,36 @@ Learn → Understand → Visualize → Trace → Predict → Run → Compare →
 ## Safety boundary
 
 The existing [session-auth API lab](../labs/session-auth-api/README.md) is educational, not production-ready. Read its security notes. Use synthetic credentials only and do not expose the lab publicly without a security review.
+
+## Deep-dive companion guides
+
+Every chapter now includes a `DEEP-DIVE.md` guide. Use it after the chapter README for a more demanding study cycle: mental model → lifecycle trace → security invariants → implementation plan → failure modes → test matrix → debugging → teach-back → spaced review.
+
+| # | Deep dive |
+|---:|---|
+| 01 | [Identity and Authentication](./01-Identity-and-Authentication/DEEP-DIVE.md) |
+| 02 | [HTTP and Request Lifecycle](./02-HTTP-and-Request-Lifecycle/DEEP-DIVE.md) |
+| 03 | [Password Security](./03-Password-Security/DEEP-DIVE.md) |
+| 04 | [Registration and Validation](./04-Registration-and-Validation/DEEP-DIVE.md) |
+| 05 | [Server-Side Sessions](./05-Server-Side-Sessions/DEEP-DIVE.md) |
+| 06 | [Cookies, CSRF, and CORS](./06-Cookies-CSRF-and-CORS/DEEP-DIVE.md) |
+| 07 | [Authentication Middleware](./07-Authentication-Middleware/DEEP-DIVE.md) |
+| 08 | [Authorization and Tenant Isolation](./08-Authorization-and-Tenant-Isolation/DEEP-DIVE.md) |
+| 09 | [JWT and Access Tokens](./09-JWT-and-Access-Tokens/DEEP-DIVE.md) |
+| 10 | [Refresh Tokens and Rotation](./10-Refresh-Tokens-and-Rotation/DEEP-DIVE.md) |
+| 11 | [Account Verification and Recovery](./11-Account-Verification-and-Recovery/DEEP-DIVE.md) |
+| 12 | [OAuth and OpenID Connect](./12-OAuth-and-OpenID-Connect/DEEP-DIVE.md) |
+| 13 | [MFA and Passkeys](./13-MFA-and-Passkeys/DEEP-DIVE.md) |
+| 14 | [Testing and Threat Modeling](./14-Testing-and-Threat-Modeling/DEEP-DIVE.md) |
+| 15 | [Production Operations](./15-Production-Operations-and-Incident-Response/DEEP-DIVE.md) |
+
+## Study support
+
+- [Mastery and spaced-learning system](../docs/35-master-learning-system.md)
+- [End-to-end reference architecture](../docs/36-end-to-end-reference-architecture.md)
+- [Authentication glossary](../docs/37-authentication-glossary-in-depth.md)
+- [Flow diagrams](../diagrams/authentication-flow-diagrams.md)
+- [Teach-back rubric](../teaching/teach-back-rubric.md)
+- [Spaced-repetition flashcards](../teaching/spaced-repetition-flashcards.md)
+- [Production security gates](../checklists/production-security-gates.md)
+
