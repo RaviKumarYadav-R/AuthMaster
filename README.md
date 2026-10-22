@@ -148,3 +148,4 @@ Start with the [mastery system](docs/35-master-learning-system.md), then study t
 
 > This is a substantial expansion milestone, not a claim that every topic is already a 1,000-line textbook or a production-ready implementation. Continue deepening chapters with runnable labs, line-by-line walkthroughs, and tested reference implementations. Correctness and useful depth matter more than padded line counts.
 
+For the next expansion milestone, see the [chapter-by-chapter textbook expansion roadmap](docs/38-chapter-expansion-roadmap.md). It defines the additional subchapters, labs, test coverage, and acceptance criteria needed to deepen each topic without padding it with repetitive text.
