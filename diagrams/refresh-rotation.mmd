@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant C as Client
+    participant A as Auth API
+    participant D as Credential Store
+    C->>A: Present refresh token R1
+    A->>D: Validate R1 is active and unexpired
+    D-->>A: R1 valid
+    A->>D: Atomically revoke R1 and create R2
+    D-->>A: Rotation committed
+    A-->>C: New access token + R2
+    C->>A: Later reuse R1
+    A->>D: Detect R1 already consumed
+    D-->>A: Reuse detected
+    Note over A,D: Apply documented token-family/session revocation policy
+    A-->>C: Reject; require reauthentication as policy dictates
