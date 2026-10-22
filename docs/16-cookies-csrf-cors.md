@@ -47,3 +47,18 @@ HttpOnly reduces direct cookie extraction but does not make XSS harmless. Script
 3. Which cookie attributes fit a same-site React + Express app?
 4. What changes if frontend and API use different sites?
 5. Which tests would prove the CSRF defense works in a real browser?
+
+## Deep dive: design browser defenses from the request flow
+
+### Cookie attributes
+HttpOnly prevents ordinary JavaScript from reading the cookie; Secure restricts it to secure transport; SameSite influences cross-site sending; Path and Domain constrain where it is sent; Expires and Max-Age govern browser retention. Browser retention is distinct from server-side session validity.
+
+### CSRF defense design
+Identify ambient credentials and every state-changing endpoint. Never mutate state through GET. Choose a CSRF strategy appropriate to the architecture, such as anti-CSRF tokens plus Origin/Referer checks where appropriate, with SameSite as defense-in-depth. Test normal same-site actions and hostile cross-site attempts.
+
+### CORS configuration
+Allow only expected origins, methods, and headers. Credentialed cross-origin requests need explicit allowed origins; wildcard origin is not valid with credentials. CORS does not stop curl or other direct API clients and is not a general authorization mechanism.
+
+### Practice
+Use two local origins in a browser test. Inspect preflight, actual request, cookie attachment, response readability, and the server's CSRF decision separately. Write down which layer blocks each attempted action.
+
