@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant B as Browser
+    participant A as Application API
+    participant S as Session Store
+    B->>A: POST /auth/login over HTTPS
+    A->>A: Validate input and verify password hash
+    A->>S: Create new session after rotating identifier
+    S-->>A: Session persisted
+    A-->>B: Set-Cookie with HttpOnly, SameSite, Secure in production
+    B->>A: GET /auth/me with eligible cookie
+    A->>S: Look up session and validate expiry
+    S-->>A: Session state
+    A->>A: Apply account and authorization policy
+    A-->>B: Safe profile or denial
+    Note over B,A: Cookie delivery does not itself prove resource permission
