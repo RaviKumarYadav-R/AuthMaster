@@ -1,0 +1,10 @@
+flowchart LR
+    Browser[Browser / React UI] -->|HTTPS request + cookie| API[Application API]
+    API -->|query constrained by user/tenant| DB[(Database)]
+    API -->|session lookup / revoke| Store[(Session Store)]
+    API -->|authorization code / OIDC protocol| IdP[Identity Provider]
+    API --> Logs[Redacted Audit / Security Logs]
+    Browser -. untrusted input .-> API
+    Browser -. client state is not authority .-> API
+    DB -. sensitive data boundary .-> API
+    Store -. session IDs must not be logged .-> API
