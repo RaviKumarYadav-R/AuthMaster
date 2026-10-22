@@ -1,6 +1,6 @@
 {
   "name": "authmaster-session-auth-lab",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "description": "Educational Express session-authentication lab",
   "main": "src/server.js",
@@ -18,5 +18,8 @@
     "helmet": "^8.0.0",
     "mongoose": "^8.9.5",
     "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
   }
 }
