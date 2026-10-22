@@ -19,3 +19,18 @@ Use a maintained OIDC client/provider SDK; use Authorization Code with PKCE wher
 ## Exercise
 
 Draw the provider redirect flow. Mark where state, code, PKCE verifier, ID token, and local application session are created, sent, and validated.
+
+## Deep dive: protocol actors and artifacts
+
+### Actors
+Distinguish the user agent, client application, authorization server, resource server, and OpenID Provider. In OIDC, the relying party validates an identity assertion; an API resource server validates an access token intended for that API.
+
+### Authorization Code with PKCE
+The client creates a high-entropy verifier and challenge, generates state, and in OIDC generates a nonce. The provider authenticates the user and redirects with a short-lived code to a registered URI. The client validates state, redeems the code with the verifier, validates the ID token, and establishes local application state according to its architecture.
+
+### Validation invariants
+Match redirect URIs strictly. Validate state, nonce, issuer, signature, audience, expiry, and relevant claims. Load metadata and signing keys from the expected provider. Map external identity by a stable issuer and subject pair, not email alone. Define account-linking and local/provider logout behavior explicitly.
+
+### Exercise
+Draw the whole redirect sequence and label who creates, receives, stores, and validates state, nonce, code, verifier, ID token, and access token. Test wrong state, wrong nonce, redirect mismatch, wrong issuer/audience, and identity-link collision. Use a maintained OIDC library.
+
