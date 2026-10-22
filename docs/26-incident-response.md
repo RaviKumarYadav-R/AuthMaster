@@ -36,3 +36,22 @@ Follow applicable legal, contractual, and organizational notification requiremen
 - [ ] Keep incident contacts and escalation steps current.
 - [ ] Ensure logs support investigation without storing secrets.
 - [ ] Rehearse a simulated credential leak.
+
+## Deep dive: identity incident playbooks
+
+### First priorities
+Establish scope, preserve useful evidence, contain affected credentials or keys, assess data exposure, and communicate through the incident process. Never copy stolen tokens or passwords into tickets or chat. Follow applicable privacy, legal, and notification requirements.
+
+### Playbooks
+- Password database exposure: protect the database, assess hash parameters, decide on resets, revoke sessions where justified, and monitor credential stuffing.
+- Session theft: revoke affected sessions, investigate logging/delivery paths, and assess XSS or device compromise.
+- Refresh-token replay: identify the token family, revoke according to policy, require reauthentication, and investigate client/storage exposure.
+- Signing-key compromise: remove trust in the key, rotate safely, invalidate affected tokens, and verify all services updated configuration.
+- Recovery abuse: invalidate outstanding recovery tokens, notify affected users where appropriate, and strengthen rate controls.
+
+### Evidence and recovery
+Keep timestamps, request IDs, event categories, and actions while redacting secrets. Define decision owners, customer communication, restoration criteria, and a post-incident review with owners and deadlines.
+
+### Tabletop exercise
+A refresh token appears in logs. Identify containment steps, log sources, revocation mechanism, user impact, and a regression test that prevents recurrence.
+
