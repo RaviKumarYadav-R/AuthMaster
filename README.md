@@ -130,3 +130,21 @@ For every feature, answer:
 ## License
 
 MIT for the educational materials and starter code in this repository. Third-party references remain the property of their respective owners.
+
+## Deep-dive learning system
+
+Each of the 15 foundational topics now has a dedicated `DEEP-DIVE.md` companion with lifecycle tracing, security invariants, implementation planning, failure patterns, test matrices, debugging steps, teach-back prompts, and retrieval questions.
+
+Start with the [mastery system](docs/35-master-learning-system.md), then study the [end-to-end reference architecture](docs/36-end-to-end-reference-architecture.md), [flow diagrams](diagrams/authentication-flow-diagrams.md), and [authentication glossary](docs/37-authentication-glossary-in-depth.md).
+
+### How to study each topic
+
+1. Read the chapter README and write down your current understanding.
+2. Draw the flow from memory and label every trust boundary.
+3. Implement a small local lab using maintained libraries.
+4. Test invalid, expired, replayed, unauthorized, concurrent, and dependency-failure cases where applicable.
+5. Complete the [teach-back rubric](teaching/teach-back-rubric.md) and revisit the [flashcards](teaching/spaced-repetition-flashcards.md) on a spaced schedule.
+6. Review the [production security gates](checklists/production-security-gates.md) before adapting educational code to a real service.
+
+> This is a substantial expansion milestone, not a claim that every topic is already a 1,000-line textbook or a production-ready implementation. Continue deepening chapters with runnable labs, line-by-line walkthroughs, and tested reference implementations. Correctness and useful depth matter more than padded line counts.
+
