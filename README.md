@@ -31,7 +31,7 @@ AuthMaster is a structured, hands-on curriculum for learning web authentication,
 
 ## Curriculum
 
-The full 33-chapter index and an eight-week study plan are in the [learning map](docs/00-learning-map.md).
+The full 34-chapter index and an eight-week study plan are in the [learning map](docs/00-learning-map.md).
 
 | Stage | Topics | Main deliverable |
 |---|---|---|
@@ -123,6 +123,7 @@ For every feature, answer:
 - [Flashcards](teaching/flashcards.md)
 - [Self-assessment quiz](teaching/quiz.md)
 - [Capstone project](docs/31-capstone-auth-service.md)
+- [Step-by-step code-first API tutorial](docs/33-build-auth-api-step-by-step.md)
 - [Contributing guide](CONTRIBUTING.md)
 - [Security policy](SECURITY.md)
 
