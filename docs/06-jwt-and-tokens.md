@@ -27,3 +27,18 @@ JWT means authentication is secure; payload is private; a decoded token is trust
 ## Exercise
 
 Write a verification checklist before coding middleware: allowed algorithms, expiry, issuer, audience, error handling, and where the token is accepted.
+
+## Deep dive: token validation policy
+
+### Decode is not verification
+Base64URL decoding reveals content; it does not prove who created the token or whether it has been altered. A signed JWT is generally readable and should not contain secrets merely because it is signed.
+
+### Write the policy first
+Specify token purpose, accepted algorithms, trusted key source, issuer, audience, subject, expiry, not-before time, required claims, acceptable clock skew, and any revocation/session-version check. Reject unexpected token types and missing required claims. Do not allow untrusted header fields to make arbitrary keys or URLs trusted.
+
+### Key lifecycle
+Document key generation, secure storage, distribution, rotation, overlap, retirement, and emergency compromise response. A key ID can select a key from an already trusted set; it must not turn an attacker-controlled key into a trusted one.
+
+### Test matrix
+Start with one valid token. Then independently test invalid signature, altered payload, expired token, future not-before, wrong issuer, wrong audience, unsupported algorithm, missing required claim, and token intended for another service. Every invalid case must fail closed.
+
