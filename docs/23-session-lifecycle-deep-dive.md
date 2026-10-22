@@ -29,3 +29,22 @@ Regenerate or revoke sessions when privilege levels change where appropriate. A 
 5. Expire or delete the server-side session and retry.
 6. Disable the account and retry.
 7. Verify no session ID appears in logs.
+
+## Deep dive: session state machine
+
+Model session states such as anonymous, authenticated, rotated, expired, revoked, and invalid. Define transitions for login, privilege change, password change, logout, account disablement, suspected compromise, idle timeout, and absolute timeout.
+
+### Invariants
+- Authentication rotates the session identifier.
+- Identifiers are unpredictable and treated as secrets.
+- The server checks expiry and account state, not just cookie presence.
+- Logout and revocation invalidate server-side state.
+- Privilege elevation may require fresh authentication or step-up verification.
+- Store failure must not accidentally produce an authenticated response.
+
+### Verification
+Trace middleware loading, route mutation, store save, cookie emission, and subsequent lookup. Test ID rotation, stale account, expired session, store outage, logout replay, and multi-instance behavior. Record the expected status and state transition for every case.
+
+### Trade-offs
+Short lifetimes reduce exposure but increase reauthentication friction. Centralized revocation improves control but adds store availability and latency dependencies. State the chosen policy and operational consequences rather than treating defaults as universal.
+
