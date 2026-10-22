@@ -92,7 +92,7 @@ Run:
 npm test
 ```
 
-The current automated tests cover credential validation and startup configuration only. They do **not** prove the whole login/session/logout flow is secure. Follow [the test plan](test/README.md) before treating the lab as complete.
+The automated suite covers credential validation, startup configuration, basic HTTP headers, malformed/oversized request bodies, and safe invalid-input responses. It does **not** prove the whole login/session/logout flow is secure. Follow [the test plan](test/README.md) before treating the lab as complete.
 
 ## Rate-limit note
 
