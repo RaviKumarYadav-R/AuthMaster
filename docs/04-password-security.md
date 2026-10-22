@@ -25,3 +25,18 @@ Set sensible length limits; avoid arbitrary composition rules that encourage pre
 ## Exercise
 
 Write tests for correct password, incorrect password, malformed stored hash, and legacy hash upgrade. Explain why salts and work factors matter.
+
+## Deep dive: password lifecycle and resource controls
+
+### Registration path
+Accept bounded input, validate the chosen policy, normalize only the identifier according to a documented rule, hash the password using a maintained password-hashing library, and persist only the hash. Never include passwords in logs, traces, analytics, error messages, or support tickets.
+
+### Verification path
+Fetch the stored hash only in the credential-verification path. Use the library's verification function rather than comparing strings or implementing cryptography. Return a generic credential error for unknown account and incorrect password when account enumeration is a concern. If supported, upgrade outdated hash parameters after a successful verification.
+
+### Salts and work factors
+A unique salt makes equal passwords produce different stored hashes and prevents reusable precomputed tables from being broadly effective. A work factor increases guessing cost but also consumes server resources. Measure settings against deployment capacity and protect expensive verification paths with rate limits and monitoring.
+
+### Exercises
+Confirm the database has no plaintext password field. Register two synthetic users with the same password and inspect that the stored hashes differ. Test a wrong password, maximum input length, and log redaction. Explain why hashing is not encryption and why hashing alone does not prevent credential stuffing.
+
