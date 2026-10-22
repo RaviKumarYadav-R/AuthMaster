@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant U as User Browser
+    participant C as Client Application
+    participant OP as OpenID Provider
+    participant API as Application Backend
+    C->>C: Create state, nonce, code verifier and code challenge
+    C->>U: Redirect to provider with state, nonce and challenge
+    U->>OP: Authenticate user
+    OP-->>U: Redirect to registered callback with code and state
+    U->>C: Callback with code and state
+    C->>C: Verify state matches the initiating request
+    C->>OP: Redeem code with code verifier
+    OP-->>C: Tokens
+    C->>C: Validate ID token signature, issuer, audience, expiry and nonce
+    C->>API: Establish local session or complete documented client flow
+    Note over C,OP: Use a maintained OIDC client; this diagram is conceptual
