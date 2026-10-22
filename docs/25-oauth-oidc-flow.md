@@ -33,3 +33,17 @@ Provider logout and local application logout are different. Document whether loc
 
 ## Review questions
 Which component validates the ID token? Where is the client secret stored? Which redirect URIs are registered? How are state and nonce checked? How is an external identity mapped to a local user? What happens when the provider is unavailable?
+
+## Deep dive: map protocol artifacts to validators
+
+Draw the browser, client application, authorization server, and resource server separately. Label authorization request, state, nonce, PKCE challenge, authorization code, PKCE verifier, token response, ID token, and access token. State which actor creates, receives, stores, and validates each artifact.
+
+### Protocol invariants
+Redirect URIs are registered and matched strictly. State is tied to the initiating browser transaction. PKCE binds code redemption to the initiating client. Nonce binds the ID token to the authentication request. Issuer and audience are validated. External identity mapping uses a stable issuer/subject pair.
+
+### Common mistakes
+Avoid accepting a token without validation, confusing ID and access tokens, allowing open redirects, linking accounts based only on unverified email, or assuming provider logout clears local application state. Use a maintained OIDC library.
+
+### Practice
+Create a validation checklist for every callback parameter and token claim. Test wrong state, wrong nonce, redirect mismatch, wrong issuer/audience, expired token, and account-linking collision in a non-production provider environment.
+
