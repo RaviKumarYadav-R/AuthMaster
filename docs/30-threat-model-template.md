@@ -43,3 +43,21 @@ List unit, integration, browser, operational, and manual-review evidence. Includ
 
 ## 9. Decision and review
 Record accepted risks, approver, review date, monitoring plan, and conditions that require the threat model to be revisited.
+
+## How to complete the threat model
+
+### 1. Scope
+Record system purpose, included and excluded flows, deployment assumptions, client types, assets, and security objectives.
+
+### 2. Draw data flows
+Include browser/mobile client, edge proxy, API, database, session/token store, email provider, identity provider, secrets store, logs, and administrators. Mark trust boundaries and label sensitive data crossing them.
+
+### 3. Enumerate threats
+Consider spoofing, tampering, repudiation, information disclosure, denial of service, and elevation of privilege. Add identity-specific cases such as credential stuffing, session replay, recovery takeover, refresh-token race, cross-tenant access, key compromise, and account linking.
+
+### 4. Rank and mitigate
+Record likelihood, impact, existing controls, proposed mitigation, owner, due date, and residual risk. Explain assumptions instead of using false precision.
+
+### 5. Verify and revisit
+Link each important threat to tests or operational controls. Revisit after new authentication methods, new client origins, multi-tenant features, provider changes, deployment changes, or major incidents.
+
