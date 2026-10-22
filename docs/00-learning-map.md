@@ -1,6 +1,6 @@
 # 00 — Complete Learning Map
 
-This is the main route through AuthMaster. Read in order, but revisit chapters when a later implementation exposes a gap. The time estimates are flexible study suggestions, not guarantees.
+This is the main route through AuthMaster. Read in order, but revisit chapters when a later implementation exposes a gap. Use the [complete course blueprint](34-course-blueprint.md) to understand the required depth, section structure, mastery ladder, and expected deliverables for every topic. The time estimates are flexible study suggestions, not guarantees.
 
 ## The full chapter index
 
@@ -39,6 +39,7 @@ This is the main route through AuthMaster. Read in order, but revisit chapters w
 | [31 — Capstone](31-capstone-auth-service.md) | End-to-end design and review | Deliver a documented learning project |
 | [32 — Review/interview questions](32-authentication-review-interview.md) | Retrieval practice and reasoning | Explain concepts under questioning |
 | [33 — Build the API step by step](33-build-auth-api-step-by-step.md) | Complete code-first guided implementation | Build, test, debug, and teach the session flow |
+| [34 — Complete course blueprint](34-course-blueprint.md) | Detailed course structure and lesson standard | Study every topic using one consistent method |
 
 ## Supporting material
 
