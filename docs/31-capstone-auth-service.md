@@ -47,3 +47,25 @@ Run the test matrix, record gaps honestly, ask another person to review the desi
 - The author can explain each decision and its trade-offs.
 
 A completed capstone is evidence of learning, not a security certification.
+
+## Expanded capstone rubric
+
+### Required deliverables
+1. Product requirements and explicit non-goals.
+2. Architecture and trust-boundary diagrams.
+3. Identity data model with sensitive-field classification and lifecycle.
+4. API contracts for register, login, current user, logout, password change, recovery, and protected resources.
+5. Session policy covering rotation, idle/absolute expiry, revocation, disablement, and store failure.
+6. Password policy and abuse controls.
+7. Authorization matrix including cross-user and cross-tenant denial.
+8. Threat model with prioritized mitigations.
+9. Unit, integration, browser, and abuse test plan.
+10. Deployment, secrets, monitoring, backup/restore, and incident playbooks.
+11. Teach-back guide and demo using synthetic accounts.
+
+### Evaluation
+Score each area from 0 to 3: 0 means missing; 1 means described but not demonstrated; 2 means implemented and tested; 3 means tested, explained, and includes failure/operational handling. The capstone is incomplete if authorization boundaries, session revocation, recovery, or secret handling are only described but not tested.
+
+### Final demo
+Demonstrate successful login, failed login, anonymous denial, cross-user denial, logout, replay rejection, rate limiting, and safe errors. Explain one trade-off and one remaining risk without claiming the service is production secure.
+
