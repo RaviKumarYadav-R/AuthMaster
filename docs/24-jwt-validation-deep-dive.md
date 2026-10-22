@@ -38,3 +38,17 @@ Short expiry reduces the exposure window but does not provide immediate revocati
 
 ## Exercise
 Write pseudocode for a verifier and annotate every check. Add tests for expired, wrong issuer, wrong audience, malformed signature, unexpected algorithm, and valid token.
+
+## Deep dive: verifier policy and failure handling
+
+Write the verification policy before implementing middleware. Specify token purpose, accepted algorithms, trusted key source, issuer, audience, required claims, expiry and not-before rules, clock tolerance, and revocation/session-version checks where applicable. Key selection must be constrained to trusted configuration; never fetch arbitrary URLs based on untrusted token headers.
+
+### Fail closed
+Malformed token, missing key, invalid signature, wrong algorithm, wrong issuer/audience, expired token, or unexpected token type must never produce an authenticated principal. Keep client errors generic while preserving safe internal diagnostics.
+
+### Key lifecycle
+Plan generation, protected storage, distribution, rotation, overlap, retirement, and emergency compromise response. A key identifier may select among already trusted keys; it must not establish trust by itself.
+
+### Practice
+Start with one valid token and mutate one condition at a time. Test invalid signature, altered payload, expired token, future not-before, wrong issuer, wrong audience, unsupported algorithm, missing required claim, and a token intended for another service. Every invalid case must fail closed.
+
