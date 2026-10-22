@@ -49,3 +49,23 @@ For each answer, score 0–2:
 - **2:** explains flow, security property, limitation, and test
 
 Repeat questions scored 0 or 1 after one day, three days, and one week.
+
+## Deep review and interview method
+
+For every question, answer in this order: define the concept, draw the flow, state the threat model, explain implementation, discuss failure cases, compare alternatives, and describe how you would test it. This demonstrates engineering reasoning rather than memorized vocabulary.
+
+### Core questions
+- Why is password hashing different from encryption?
+- Why regenerate a session ID after login?
+- Why is clearing a cookie alone insufficient for logout?
+- What does a JWT signature prove, and what does it not prove?
+- Why validate issuer and audience?
+- How do CSRF and CORS differ?
+- How can a valid session still be denied a resource?
+- How do refresh rotation and replay detection behave under concurrency?
+- What are state, nonce, and PKCE for in OIDC?
+- What should be revoked after account compromise?
+
+### Practice format
+Answer each question in 60 seconds, then expand to five minutes with a diagram and example. Mark answers as confident and test-backed, understood but untested, or needs review. Turn every weak answer into a code exercise or negative test.
+
