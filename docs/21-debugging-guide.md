@@ -27,3 +27,20 @@ Check whether the database field is excluded by default and explicitly selected,
 4. Check negative cases and server-side mutations.
 5. Add a regression test before closing the issue.
 6. Remove temporary debugging output and confirm no secret is logged.
+
+## Deep dive: debug by following the state
+
+### Create a request timeline
+Record the exact sequence of registration, login, cookie receipt, protected request, and logout with timestamps and status codes. Inspect method, URL, headers, JSON shape, Set-Cookie, and whether the next request sends Cookie. Change one variable at a time.
+
+### Symptom map
+- 400: inspect JSON syntax, content type, and validation rules.
+- 401 on login: verify normalized identifier, stored hash, and password verification; do not weaken checks.
+- Login succeeds but current-user returns 401: inspect cookie scope, browser storage, HTTPS/Secure behavior, store persistence, and proxy configuration.
+- CORS error: inspect exact origin and credentials policy; do not combine wildcard origins with credentialed requests.
+- Old session works after logout: verify server-side invalidation and store semantics.
+- Only production cookies fail: inspect TLS termination and trusted-proxy configuration.
+
+### Safe diagnostics
+Log request ID, route, status, latency, and non-sensitive error category. Never log passwords, cookie headers, session IDs, bearer tokens, recovery links, or raw request bodies. Write a hypothesis before changing code and add a regression test after finding the root cause.
+
