@@ -44,3 +44,22 @@ Invalidates server-side session state and clears the browser cookie with matchin
 - Never trust user IDs, roles, tenant IDs, or ownership claims from client input.
 - Document cookie behavior and CSRF expectations.
 - Add tests for success and failure status codes.
+
+## Deep dive: specify endpoints before handlers
+
+For every endpoint document method, path, authentication requirement, CSRF requirement, input schema, success status/body, failure status/body, rate limit, state changes, and audit event. Keep response shapes predictable and never return password hashes, private tokens, or stack traces.
+
+### Example contract
+
+```http
+POST /auth/login
+Content-Type: application/json
+
+{"email":"learner@example.com","password":"synthetic-demo-password"}
+```
+
+A successful response might be HTTP 200 with a safe user profile and Set-Cookie. Invalid credentials should use the documented generic failure response. Malformed JSON, invalid input, and rate limiting should have distinct documented behavior without leaking internals.
+
+### API quality rules
+Validate on the server even if the frontend also validates. Bound body sizes, use consistent content types, define retry/idempotency behavior, and enforce authorization on every protected resource. Write contracts before implementation and convert each contract row into a positive and negative test.
+
