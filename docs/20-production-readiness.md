@@ -42,3 +42,18 @@ This checklist is a starting point, not certification. Authentication systems ne
 - [ ] Dependency updates and key rotation have owners.
 
 For each checked item, record configuration, test, or review evidence. An unchecked box should have an owner and remediation plan.
+
+## Deep dive: production readiness evidence
+
+### Security gates
+Verify TLS and proxy behavior, persistent session/token storage, rotation and revocation, CSRF defenses, resource authorization, account recovery, safe errors, and redacted logs. Review CORS, CSP, cookie scope, cache headers, body limits, timeouts, and rate limits against the actual deployment.
+
+### Operations gates
+Confirm least-privilege database credentials, secret management and rotation, dependency scanning, patch ownership, monitoring and alert response, backup restoration, graceful shutdown, health checks, and documented retention/deletion policy.
+
+### Evidence pack
+Collect architecture and trust-boundary diagrams, threat model, API contracts, positive/negative test reports, dependency scan results, deployment review, restore/rotation drills, and a list of accepted residual risks with owners.
+
+### Go/no-go questions
+Can sessions be revoked quickly? Can accounts be recovered securely? Can cross-user access be proven denied? Can the team detect credential stuffing? Can secrets be rotated? Can backups be restored? If not, record the gap as a blocker or explicitly accepted risk; do not call the lab production-ready.
+
