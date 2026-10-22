@@ -38,3 +38,18 @@ Verify both the response and the absence of unauthorized state changes.
 
 ## Exercise
 Design policies for private notes, shared notes, team folders, and tenant invoices. Write a table of principals, actions, resources, and expected allow/deny outcomes before writing middleware.
+
+## Deep dive: policy inputs and consistent enforcement
+
+### Policy inputs
+An authorization decision may depend on subject, action, resource, tenant, resource state, and context such as time or step-up authentication. Define each input and its trusted source. Client-submitted role and ownership fields are not proof.
+
+### Policy structure
+Keep policy decisions testable and consistent. A document update might require an authenticated principal, matching tenant, owner/editor permission, and a document that is not locked. Apply the same rules to REST endpoints, background jobs, exports, and administrative workflows.
+
+### Data-layer defense
+Where practical, scope queries by resource ID and permitted owner/tenant. Bulk operations and counts must follow the same tenant boundaries. Avoid leaking another tenant's record existence through distinct errors when that disclosure is not intended.
+
+### Practice
+Create a policy matrix for read/create/update/delete/share/admin. Specify roles, ownership, tenant scope, and step-up requirements. Write tests for allowed and denied cases, including role changes and stale memberships.
+
