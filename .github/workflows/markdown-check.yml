@@ -1,0 +1,26 @@
+name: Markdown checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Check Markdown files are non-empty
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=$(find . -type f -name '*.md' -not -path './.git/*')
+          test -n "$files"
+          while IFS= read -r file; do
+            test -s "$file"
+          done <<< "$files"
+          echo "Markdown files are present and non-empty."
