@@ -1,6 +1,6 @@
 # Lab Test Plan
 
-The current automated suite covers credential input validation and startup configuration. It does **not** prove the full authentication flow is secure.
+The current automated suite covers credential validation, startup configuration, basic HTTP headers, malformed/oversized request bodies, and safe responses for invalid inputs. It does **not** prove the full authentication flow is secure.
 
 ## Automated tests currently included
 
@@ -12,7 +12,7 @@ The current automated suite covers credential input validation and startup confi
 - Port range validation
 - Allowed NODE_ENV values
 
-Run the suite from this directory with npm test.
+Run the suite from this directory with npm test. The HTTP-level tests use Supertest and do not require a running MongoDB instance because they deliberately avoid valid credential requests.
 
 ## Integration tests still needed
 
