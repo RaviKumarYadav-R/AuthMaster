@@ -83,7 +83,7 @@ Requirements: Node.js 20+ and a local/development MongoDB instance.
 8. Follow [the local HTTP examples](labs/session-auth-api/POSTMAN-EXAMPLES.md).
 9. Run npm test and read [the test plan](labs/session-auth-api/test/README.md).
 
-Do not use real credentials or expose the lab to the public internet. The current automated tests cover request validation only; they do **not** prove the full authentication flow is secure.
+Do not use real credentials or expose the lab to the public internet. The current automated tests cover credential validation and startup configuration only; they do **not** prove the full authentication flow is secure.
 
 ## Security principles
 
