@@ -25,3 +25,18 @@ When TLS terminates at a reverse proxy, the application must correctly understan
 
 ## Deployment verification
 Test the final deployed response headers and cookie attributes, not just local configuration. Include HTTPS redirect behavior, CORS, cache behavior, error responses, and proxy settings in release review.
+
+## Deep dive: headers and startup configuration
+
+### Headers and limitations
+Understand the purpose and limitations of Content-Security-Policy, HSTS, X-Content-Type-Options, Referrer-Policy, frame protections, and Permissions-Policy. Choose policy based on the actual frontend and embedding needs. A copied CSP may break the application, and CSP does not replace output encoding or safe DOM APIs.
+
+### Validate configuration at startup
+Check required secrets, secret length, port range, allowed environment names, database URI shape, and cookie behavior. Fail fast with actionable messages that never print secret values. Keep separate configuration for local, test, staging, and production environments.
+
+### Proxy and TLS
+If TLS terminates at a reverse proxy, understand Express trust-proxy configuration and ensure only trusted proxies can set forwarded headers. Incorrect configuration can break Secure cookies or let clients spoof IP/protocol signals used by security controls.
+
+### Practice
+Inspect response headers in automated tests and a browser. Test missing/placeholder secrets, invalid ports, unexpected environment values, and production cookie settings. Document which headers are set by the app and which are set by the edge proxy.
+
