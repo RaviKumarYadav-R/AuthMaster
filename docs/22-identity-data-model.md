@@ -26,3 +26,24 @@ Store a hash of a high-entropy token where practical, plus user ID, purpose, exp
 
 ## Exercise
 Draw collections/tables for users, sessions, external identities, reset tokens, and audit events. Label unique keys, sensitive fields, deletion behavior, and indexes. Explain how a disabled user loses access even if a session still exists.
+
+## Deep dive: schema and lifecycle invariants
+
+### Core entities
+Depending on requirements, model User, Session, ExternalIdentity, RecoveryToken, MFAAuthenticator, AuditEvent, Tenant, and Membership. Each entity should represent a real lifecycle or policy requirement rather than being added without purpose.
+
+### Invariants
+- Identifier normalization is consistent across registration and login.
+- Password hashes never appear in ordinary profile responses.
+- External identity uniqueness uses issuer plus subject, not email alone.
+- Recovery tokens are purpose-bound, expire, and can be consumed only once.
+- Sessions/tokens have clear expiry and revocation behavior.
+- Tenant-scoped queries cannot cross the authenticated tenant boundary.
+- Audit events exclude passwords and bearer secrets.
+
+### Database design
+Use unique indexes for uniqueness and handle duplicate-key races. Use transactions or atomic conditional updates for one-time token redemption and refresh rotation. Plan expiry cleanup, indexes, retention, deletion, backup, and restore behavior.
+
+### Exercise
+Draw an ER diagram, mark sensitive fields, and state which invariant is enforced by schema, index, transaction, middleware, or service policy. Add a test for each security-relevant invariant.
+
