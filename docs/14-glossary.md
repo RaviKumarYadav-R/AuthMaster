@@ -40,3 +40,22 @@ Use these definitions consistently when explaining AuthMaster to another develop
 ## Self-test
 
 For every term, create an example and a non-example. If you cannot explain a term without another undefined term, revisit the chapter.
+
+## How to master the vocabulary
+
+For each term, learn its plain-language definition, where it appears in the request flow, and one common misconception. Use these distinctions actively rather than memorizing isolated definitions.
+
+- Authentication vs authorization: proof of identity versus permission to act.
+- OAuth vs OIDC: delegated authorization versus an identity layer built on OAuth.
+- JWT vs session: token format versus a server-managed session architecture.
+- Encoding vs encryption vs hashing: representation, confidentiality transformation, and one-way digest operation.
+- CORS vs CSRF: browser response-reading policy versus cross-site request abuse.
+- 401 vs 403: invalid/missing authentication versus a denied permission decision, subject to API contract.
+- Access token vs ID token: API access credential versus client-facing authentication assertion.
+- Cookie vs session: browser transport/storage mechanism versus server-side state.
+- Password reset vs password change: recovery with alternate proof versus authenticated credential update.
+- MFA vs two-step verification: multiple steps do not necessarily represent independent factors.
+
+### Retrieval exercise
+Choose ten terms randomly. Explain each without notes, give an HTTP or code example, and identify one misconception. Mark weak answers for review after the next implementation exercise.
+
