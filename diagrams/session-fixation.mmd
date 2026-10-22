@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant A as Attacker
+    participant B as Browser/Victim
+    participant S as Application Server
+    A->>B: Attempts to make browser use a known session ID
+    B->>S: Request with that session ID
+    S-->>B: Anonymous session
+    B->>S: Login using victim credentials
+    Note over S: Vulnerable design keeps the same ID
+    A->>S: Replays known session ID
+    S-->>A: May gain victim session if ID was not rotated
+    Note over S: Defense: regenerate session ID after authentication and privilege changes
