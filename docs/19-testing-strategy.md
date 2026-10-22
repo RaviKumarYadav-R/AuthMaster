@@ -43,3 +43,18 @@ Authentication tests should prove allowed and denied behavior. A successful logi
 Use Node's built-in test runner for pure logic, Supertest or an equivalent HTTP integration tool for Express, and Playwright or another maintained browser automation tool for browser-specific behavior. Verify current versions and compatibility before installing.
 
 A feature is not complete until success, failure, authorization, expiry/revocation, logging, and documentation have been tested.
+
+## Deep dive: test security properties
+
+### Test layers
+Unit tests cover pure validation and policy logic. Integration tests exercise routes with persistence and session/token stores. Browser end-to-end tests cover cookies, redirects, SameSite, CORS, and CSRF. Abuse tests cover rate limits, replay, concurrency, and resource exhaustion. Operational drills cover key rotation, restore, and incident response.
+
+### Test pattern
+Given a known initial state, make one request and assert status, response shape, state transition, and absence of forbidden side effects. For authorization, use at least two users and attempt cross-user access. For one-time tokens, test concurrent redemption as well as sequential replay.
+
+### Isolation
+Use a dedicated test database, synthetic identities, deterministic cleanup, and unique test data. Never run destructive helpers against production. Mock external providers where appropriate and test their failure behavior separately.
+
+### Coverage limits
+Passing tests only demonstrates the properties tested under the conditions exercised. Track untested risks and add tests when code changes, incidents, or threat models expose gaps.
+
