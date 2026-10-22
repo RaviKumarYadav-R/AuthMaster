@@ -25,3 +25,18 @@ Use HTTPS in deployed environments. Do not send passwords or tokens over plainte
 ## Exercise
 
 Inspect a login response and explain every cookie attribute. Then describe one attack each for CSRF and XSS and the limits of the corresponding defenses.
+
+## Deep dive: browser request lifecycle
+
+### Request and response anatomy
+Record the method, path, headers, cookie, content type, body, status, response headers, and response body for each authentication request. HTTPS protects data in transit to the TLS endpoint; it does not make client input trustworthy or prevent an authenticated user from requesting another user's data.
+
+### Origin versus site
+An origin is defined by scheme, host, and port. A site is a different browser concept used by cookie policies. Two URLs may be cross-origin but same-site, or cross-site. This distinction matters when choosing SameSite settings, CORS behavior, and CSRF defenses.
+
+### Browser security controls are not interchangeable
+CORS primarily controls whether browser JavaScript can read a cross-origin response. CSRF concerns unwanted authenticated requests using ambient credentials. XSS is script execution in a trusted origin. CSP can reduce some XSS impact, but output encoding and safe DOM APIs remain important. HttpOnly limits cookie reads, not all actions malicious script can perform.
+
+### Lab
+Use browser DevTools Network to inspect login and current-user requests. Test missing cookies, malformed JSON, an oversized body, a cross-origin fetch, and a state-changing request without the intended CSRF defense. For each case, state whether the browser or server is responsible for rejecting it.
+
