@@ -38,6 +38,7 @@ This is the main route through AuthMaster. Read in order, but revisit chapters w
 | [30 — Threat-model template](30-threat-model-template.md) | Scope, assets, flows, threats, evidence | Create a feature-specific threat model |
 | [31 — Capstone](31-capstone-auth-service.md) | End-to-end design and review | Deliver a documented learning project |
 | [32 — Review/interview questions](32-authentication-review-interview.md) | Retrieval practice and reasoning | Explain concepts under questioning |
+| [33 — Build the API step by step](33-build-auth-api-step-by-step.md) | Complete code-first guided implementation | Build, test, debug, and teach the session flow |
 
 ## Supporting material
 
@@ -50,6 +51,7 @@ This is the main route through AuthMaster. Read in order, but revisit chapters w
 - [Flashcards](../teaching/flashcards.md)
 - [Self-assessment quiz](../teaching/quiz.md)
 - [Capstone security notes](../labs/session-auth-api/SECURITY-NOTES.md)
+- [Step-by-step code-first API tutorial](33-build-auth-api-step-by-step.md)
 
 ## Suggested eight-week plan
 
@@ -59,7 +61,7 @@ Read chapters 01–04. Draw a login request/response sequence. Explain authentic
 **Deliverable:** a concept map and a glossary in your own words.
 
 ### Week 2 — Sessions
-Read chapters 05, 16, and 23. Run the session lab locally. Inspect the cookie, login, call /auth/me, log out, and verify the old session cannot be replayed. Read the lab's security notes before adapting it.
+Read chapters 05, 16, 23, and 33. Follow the code-first tutorial while running the session lab locally. Inspect the cookie, login, call /auth/me, log out, and verify the old session cannot be replayed. Read the lab's security notes before adapting it.
 
 **Deliverable:** local demo notes plus a list of missing production controls.
 
