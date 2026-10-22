@@ -37,3 +37,18 @@ A system with strong login but weak email-reset recovery is still weak. Threat-m
 ## Teaching exercise
 
 Compare password-only, password + TOTP, and passkey authentication. For each, list phishing resistance, recovery risks, usability constraints, and operational requirements.
+
+## Deep dive: stronger authenticators and their lifecycle
+
+### MFA factors
+Knowledge, possession, and inherence are distinct factor categories. Two passwords are not two independent factors. Plan enrollment, device replacement, recovery, step-up checks, removal, and notification. A weak recovery path can undo MFA's benefit.
+
+### TOTP and recovery codes
+TOTP uses a shared secret and time-based codes. Protect the enrollment secret, rate-limit guesses, restrict clock windows, and define replay handling. Recovery codes should be high entropy, shown once, stored safely, and invalidated when redeemed.
+
+### Passkeys and WebAuthn
+Passkeys use public-key cryptography and origin/RP ID binding. The server stores public-key credential material and metadata, not a reusable shared password. Use maintained libraries and validate challenge, origin, RP ID hash, ceremony type, and relevant authenticator data according to the specification.
+
+### Practice
+Draw enrollment and login ceremonies. Test wrong challenge, wrong origin, reused OTP, exhausted recovery codes, device loss, and account recovery. Explain the recovery assurance and revocation policy before implementation.
+
