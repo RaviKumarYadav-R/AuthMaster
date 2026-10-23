@@ -2,6 +2,10 @@
 
 > **Core idea:** An identifier claims an account; an authenticator proves control; authorization decides which actions are permitted.
 
+## Start with the detailed textbook
+
+Read [`TEXTBOOK.md`](./TEXTBOOK.md) for the expanded lesson: precise definitions, threat modeling, request tracing, examples, exercises with explanations, a mastery rubric, and teach-back prompts. Then use [`DEEP-DIVE.md`](./DEEP-DIVE.md) for the security invariants, failure analysis, and test matrix.
+
 ## 1. Why this topic exists
 
 An identifier claims an account; an authenticator proves control; authorization decides which actions are permitted.
