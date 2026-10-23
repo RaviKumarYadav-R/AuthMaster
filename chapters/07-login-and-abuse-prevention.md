@@ -1,73 +1,68 @@
 # Chapter 07 — Login and Abuse Prevention
 
-## 1. Why this matters
-A correct password check is not enough when attackers can automate guesses, enumerate accounts, or reuse leaked credentials.
+## Why this matters
+A password check alone does not protect an endpoint from automated guessing, credential stuffing, account enumeration, or denial-of-service attacks. Login design must consider how an attacker can repeat requests at scale.
 
-## 2. Learning outcomes
-By the end, you should be able to:
-- Explain the core vocabulary in plain language.
-- Draw the end-to-end flow and identify trust boundaries.
-- State the security invariants this design must preserve.
-- Propose tests for both successful and rejected requests.
+## Learning outcomes
+- Trace a login request from validation to session establishment.
+- Design rate limiting and generic failure responses.
+- Identify trade-offs in account lockout and throttling.
+- Build a test matrix for successful and failed login attempts.
 
-## 3. Vocabulary to learn
-- **credential stuffing:** define this term in your own words and connect it to the flow.
-- **brute force:** define this term in your own words and connect it to the flow.
-- **rate limiting:** define this term in your own words and connect it to the flow.
-- **generic errors:** define this term in your own words and connect it to the flow.
-- **timing:** define this term in your own words and connect it to the flow.
-- **lockout:** define this term in your own words and connect it to the flow.
-
-## 4. Mental model
-Treat this feature as a sequence of explicit decisions, not a magic library call. Identify what the browser sends, what the server verifies, what state is stored, and what the server returns. The analogy you choose must not replace the actual protocol and library documentation.
-
-## 5. Flow to draw
+## Login flow
 ```text
-Client / Browser
-      |
-      | request or redirect
-      v
-Backend / trusted client
-      |
-      +--> validate inputs and protocol state
-      +--> verify credential / identity / policy
-      +--> read or update durable state
-      |
-      v
-Response, denial, or safe recovery path
+POST /login
+    |
+    v
+Validate request shape and size
+    |
+    v
+Apply abuse controls
+    |
+    v
+Find account using normalized identifier
+    |
+    v
+Verify password with maintained hashing library
+    |
+    +--> failure: safe generic response
+    |
+    +--> success: rotate/create fresh authenticated session
 ```
 
-Adapt this diagram to the chapter. Label every request, response, trust boundary, stored secret, expiry, and rejection path. It is a starting sketch, not a complete protocol sequence.
+Do not reveal whether the email exists through different user-facing messages or obvious response differences unless there is a deliberate, reviewed reason. Avoid timing behavior that makes account discovery easier.
 
-## 6. Security invariants
-- Apply layered rate limits and abuse monitoring.
-- Avoid account-enumeration clues in user-facing responses.
-- Never log passwords.
-- Consider denial-of-service and lockout risks.
-- Rotate session state after successful login..
+## Abuse controls
+A practical design may combine:
+- per-account and per-network rate limits;
+- progressive delays or other friction for repeated failures;
+- monitoring and alerting for suspicious patterns;
+- breached-password checks where appropriate and privacy-conscious;
+- safe recovery paths for legitimate users who are blocked;
+- limits on request size and concurrent expensive operations.
 
-## 7. Practice
-Write a test matrix for known/unknown account and correct/incorrect password. Design per-account and per-network throttling with safe recovery. Explain trade-offs of permanent lockouts.
+No single limit fits every application. IP-only limits can punish shared networks and be bypassed with distributed sources; account-only limits can be abused to lock out a victim. Choose controls based on the threat model and monitor their effect.
 
-### Builder exercise
-Create a small artifact: a sequence diagram, data model, test matrix, configuration checklist, or local implementation appropriate to this chapter. State its assumptions and do not include real credentials.
+## Session handling after login
+On successful authentication, do not blindly preserve a session identifier that existed before login. Establish or rotate authenticated session state to reduce session-fixation risk. Privilege changes should also trigger the session/token policy defined by your architecture.
 
-### Breaker exercise
-Choose at least two failure cases relevant to the chapter. For each, write: input or event, expected server behavior, expected data change (if any), and how the test proves the security invariant.
+## Practice lab
+1. Build a matrix: known/unknown account × correct/incorrect password × under/over rate limit.
+2. For each case, record response behavior, session behavior, and expected audit event.
+3. Test that failed login never creates an authenticated session.
+4. Test that a successful login rotates or replaces pre-authentication session state.
+5. Explain how a permanent lockout could be abused against a victim.
+6. Verify that logs redact passwords, cookies, and bearer tokens.
 
-## 8. Review questions
-1. What problem does this mechanism solve, and what does it not solve?
-2. Which component is trusted to verify the relevant evidence?
-3. What state is stored, and what is the expiry or revocation strategy?
-4. What is one realistic failure or abuse case?
-5. How would you test that the backend denies the unsafe action?
-6. Which decision depends on your framework or deployment, and where will you verify the current guidance?
+## Review questions
+- What is credential stuffing, and how does it differ from brute force?
+- Why can account-specific lockout be a denial-of-service vector?
+- Why should login errors be designed to reduce account enumeration?
+- Why rotate session state after login?
+- Which signals are useful for monitoring without collecting secrets?
 
-## 9. Teach-back
-Explain the flow in three minutes without reading. Then explain one failure case to a beginner and why the chosen defense works.
+## Mastery gate
+Demonstrate a correct login, incorrect password, unknown account, and throttled request. Prove that failures do not authenticate the caller and that success establishes fresh session state.
 
-## 10. Mastery gate
-You are ready to move on when you can draw the flow, define the key terms, defend the invariants, and show at least one positive and two negative tests or a documented test plan.
-
-## 11. Implementation status
-Design and test plan; tune limits to the application's threat model.
+## Implementation status
+This chapter defines design and testing requirements. Choose rate-limit settings only after considering deployment topology and the application's risk.
