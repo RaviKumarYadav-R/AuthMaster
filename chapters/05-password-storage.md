@@ -1,69 +1,68 @@
 # Chapter 05 — Password Storage
 
-## 1. Why this matters
-Passwords are low-entropy human secrets. If a database leaks, fast general-purpose hashes make offline guessing much easier.
+## Why this matters
+Passwords are human-chosen and often guessable. If a database is copied, attackers can attempt guesses offline without interacting with your rate limits. Password storage is designed to make each guess expensive while keeping legitimate login practical.
 
-## 2. Learning outcomes
-By the end, you should be able to:
-- Explain the core vocabulary in plain language.
-- Draw the end-to-end flow and identify trust boundaries.
-- State the security invariants this design must preserve.
-- Propose tests for both successful and rejected requests.
+## Learning outcomes
+- Distinguish hashing, encryption, and encoding.
+- Explain salts and work factors.
+- Choose a maintained password-hashing library using current guidance.
+- Test password verification without ever storing a plaintext password.
 
-## 3. Vocabulary to learn
-- **password hashing:** define this term in your own words and connect it to the flow.
-- **salt:** define this term in your own words and connect it to the flow.
-- **work factor:** define this term in your own words and connect it to the flow.
-- **password verification:** define this term in your own words and connect it to the flow.
-- **pepper:** define this term in your own words and connect it to the flow.
-- **credential stuffing:** define this term in your own words and connect it to the flow.
+## Hashing vs encryption vs encoding
+- **Encoding** changes representation and is reversible without a secret (Base64 is not password protection).
+- **Encryption** is reversible with a key and is intended for data that must later be recovered.
+- **Password hashing** verifies a candidate without needing to recover the original password. Use a password-specific hashing scheme, not a fast general-purpose digest like plain SHA-256.
 
-## 4. Mental model
-Treat this feature as a sequence of explicit decisions, not a magic library call. Identify what the browser sends, what the server verifies, what state is stored, and what the server returns. The analogy you choose must not replace the actual protocol and library documentation.
+A password hash is still sensitive data. A leak can enable offline guessing, so protect database access and avoid exposing hashes in API responses or logs.
 
-## 5. Flow to draw
+## Salt and work factor
+A salt is a per-password random value that prevents equal passwords from automatically producing equal stored hashes and frustrates precomputed tables. Modern password-hashing libraries generally manage salts in their encoded output. A work factor makes each guess more expensive; it must be chosen with current recommendations and realistic hardware measurements.
+
+Use a maintained library and follow its current guidance. Argon2id is a common modern choice where supported; scrypt or bcrypt may be appropriate in some established environments. Do not write your own password hashing algorithm, choose parameters from an outdated blog, or treat one algorithm as universally best for every deployment.
+
+## Login verification flow
 ```text
-Client / Browser
-      |
-      | request or redirect
-      v
-Backend / trusted client
-      |
-      +--> validate inputs and protocol state
-      +--> verify credential / identity / policy
-      +--> read or update durable state
-      |
-      v
-Response, denial, or safe recovery path
+Candidate password
+       |
+       v
+Password-hashing library verify(candidate, storedHash)
+       |
+       +--> false: reject login safely
+       |
+       +--> true: continue authentication flow
 ```
 
-Adapt this diagram to the chapter. Label every request, response, trust boundary, stored secret, expiry, and rejection path. It is a starting sketch, not a complete protocol sequence.
+The application should call the library's verification function. It should not decrypt a password or compare a candidate to a plaintext database field.
 
-## 6. Security invariants
-- Use a maintained password-hashing algorithm/library such as Argon2id where supported, or a well-maintained alternative appropriate to your platform. A unique salt is handled by modern password-hashing libraries. Never store plaintext, reversible encrypted passwords, or home-grown hashes..
+## Operational considerations
+- Use a current, maintained library and supported runtime.
+- Keep hashing parameters configurable and review them periodically.
+- Consider a gradual rehash-on-success strategy when parameters change.
+- Rate-limit online guesses; password hashing does not replace abuse prevention.
+- Never log passwords, raw reset tokens, or stored password hashes.
+- Avoid leaking whether an account exists through distinguishable login errors.
+- For password changes or resets, require the appropriate proof and consider invalidating existing sessions.
 
-## 7. Practice
-Create a fake-user threat model for a database leak. Compare hashing with encryption. Inspect your chosen library's verify and parameter-upgrade guidance. Write tests for correct and incorrect password verification.
+## Practice lab
+1. Write a short explanation of why plain SHA-256 is not a suitable password-storage design by itself.
+2. Create fake test accounts only. Verify that the correct candidate passes and an incorrect candidate fails.
+3. Inspect your library's encoded hash format and identify the algorithm/parameters without trying to reverse it.
+4. Define how you will upgrade old hashes when a user next signs in.
+5. Write tests ensuring password hashes are never included in user-profile responses.
 
-### Builder exercise
-Create a small artifact: a sequence diagram, data model, test matrix, configuration checklist, or local implementation appropriate to this chapter. State its assumptions and do not include real credentials.
+## Review questions
+- What does a salt protect against, and what does it not protect against?
+- Why is a password hash not the same as encryption?
+- Why are rate limits still needed if hashing is expensive?
+- What happens when you need to raise hashing parameters?
+- Why should a password hash not be returned to React?
 
-### Breaker exercise
-Choose at least two failure cases relevant to the chapter. For each, write: input or event, expected server behavior, expected data change (if any), and how the test proves the security invariant.
+## Mastery gate
+Explain the storage design without using the phrase “encrypt the password.” Demonstrate correct/incorrect verification with a maintained library and a test proving the hash is not exposed through the API.
 
-## 8. Review questions
-1. What problem does this mechanism solve, and what does it not solve?
-2. Which component is trusted to verify the relevant evidence?
-3. What state is stored, and what is the expiry or revocation strategy?
-4. What is one realistic failure or abuse case?
-5. How would you test that the backend denies the unsafe action?
-6. Which decision depends on your framework or deployment, and where will you verify the current guidance?
+## References
+Use current OWASP Password Storage Cheat Sheet guidance and the official documentation for your selected password-hashing library before choosing parameters.
 
-## 9. Teach-back
-Explain the flow in three minutes without reading. Then explain one failure case to a beginner and why the chosen defense works.
-
-## 10. Mastery gate
-You are ready to move on when you can draw the flow, define the key terms, defend the invariants, and show at least one positive and two negative tests or a documented test plan.
-
-## 11. Implementation status
-Research and design chapter. Do not implement a custom cryptographic function.
+## Implementation status
+This is a design and verification lesson. Do not commit real passwords or hashes generated from real user credentials.
