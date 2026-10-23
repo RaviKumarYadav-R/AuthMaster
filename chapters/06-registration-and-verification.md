@@ -1,74 +1,63 @@
 # Chapter 06 — Registration and Verification
 
-## 1. Why this matters
-Account creation must validate data, avoid duplicate identities, and prove control of an address when verification is required.
+## Why this matters
+Registration creates a new security principal. It must validate input, prevent duplicate identities, store credentials safely, and—when required—verify control of an email address or other contact channel.
 
-## 2. Learning outcomes
-By the end, you should be able to:
-- Explain the core vocabulary in plain language.
-- Draw the end-to-end flow and identify trust boundaries.
-- State the security invariants this design must preserve.
-- Propose tests for both successful and rejected requests.
+## Learning outcomes
+- Design registration as a validated server-side operation.
+- Prevent duplicate identifiers under concurrent requests.
+- Design an expiring, single-use verification token.
+- Separate local development delivery from production delivery.
 
-## 3. Vocabulary to learn
-- **normalization:** define this term in your own words and connect it to the flow.
-- **uniqueness:** define this term in your own words and connect it to the flow.
-- **email verification:** define this term in your own words and connect it to the flow.
-- **entropy:** define this term in your own words and connect it to the flow.
-- **expiry:** define this term in your own words and connect it to the flow.
-- **single-use token:** define this term in your own words and connect it to the flow.
-
-## 4. Mental model
-Treat this feature as a sequence of explicit decisions, not a magic library call. Identify what the browser sends, what the server verifies, what state is stored, and what the server returns. The analogy you choose must not replace the actual protocol and library documentation.
-
-## 5. Flow to draw
+## Registration flow
 ```text
-Client / Browser
-      |
-      | request or redirect
-      v
-Backend / trusted client
-      |
-      +--> validate inputs and protocol state
-      +--> verify credential / identity / policy
-      +--> read or update durable state
-      |
-      v
-Response, denial, or safe recovery path
+Browser -> POST /register
+        -> validate request and normalize identifier
+        -> check policy and database uniqueness
+        -> hash password using maintained library
+        -> create unverified account + verification token
+        -> deliver verification link through configured channel
+Browser <- generic success response
 ```
 
-Adapt this diagram to the chapter. Label every request, response, trust boundary, stored secret, expiry, and rejection path. It is a starting sketch, not a complete protocol sequence.
+This is a conceptual flow. Database uniqueness must still handle races even if the application first checks whether an identifier exists. A real application also needs input limits, abuse controls, error handling, and safe delivery configuration.
 
-## 6. Security invariants
-- Validate server-side.
-- Enforce uniqueness in the database.
-- Generate high-entropy random tokens with a cryptographically secure API.
-- Store a safe token representation.
-- Expire and consume tokens atomically.
-- Avoid exposing tokens in production logs..
+## Verification token design
+A verification token is a temporary bearer secret. Generate it with a cryptographically secure random API. It should:
+- have sufficient unpredictability;
+- be bound to a specific account and purpose;
+- expire after a defined interval;
+- be single-use;
+- be stored in a safe representation when practical;
+- never be written to ordinary logs;
+- be consumed atomically so simultaneous requests cannot both succeed.
 
-## 7. Practice
-Trace registration, delivery, verification, expired token, and replay. Test concurrent duplicate registrations and verification-token reuse. Design a local-only email sink for development.
+Do not use a predictable user ID, timestamp, sequential counter, or ordinary pseudo-random generator as a token.
 
-### Builder exercise
-Create a small artifact: a sequence diagram, data model, test matrix, configuration checklist, or local implementation appropriate to this chapter. State its assumptions and do not include real credentials.
+## Avoid common mistakes
+- **Duplicate check only in application code:** concurrent requests can both pass. Use a database uniqueness constraint and handle its conflict cleanly.
+- **Verification token never expires:** a leaked old link may remain useful indefinitely.
+- **Token can be replayed:** mark it consumed as part of the same atomic state transition that verifies the account.
+- **Token appears in logs:** redact query strings and avoid logging full URLs that contain bearer secrets.
+- **Public development endpoint reveals tokens:** use a local-only mail sink or test fixture that cannot be exposed in production.
+- **Verification is treated as authorization:** verified email does not automatically make the user an administrator or permit access to another user's data.
 
-### Breaker exercise
-Choose at least two failure cases relevant to the chapter. For each, write: input or event, expected server behavior, expected data change (if any), and how the test proves the security invariant.
+## Practice lab
+1. Write the request/response contract for `POST /register`.
+2. Decide how your API responds to a duplicate identifier without leaking unnecessary account details.
+3. Draw valid, expired, malformed, and already-consumed token paths.
+4. Design a test for two simultaneous registration requests using the same identifier.
+5. Create a local-only delivery approach for development and explain how it is disabled in production.
 
-## 8. Review questions
-1. What problem does this mechanism solve, and what does it not solve?
-2. Which component is trusted to verify the relevant evidence?
-3. What state is stored, and what is the expiry or revocation strategy?
-4. What is one realistic failure or abuse case?
-5. How would you test that the backend denies the unsafe action?
-6. Which decision depends on your framework or deployment, and where will you verify the current guidance?
+## Review questions
+- Why is a database uniqueness constraint required?
+- Why should a verification token be single-use?
+- Why should verification tokens and password-reset tokens have separate purposes?
+- What should happen if a user opens the same verification link twice?
+- Which information should never appear in logs?
 
-## 9. Teach-back
-Explain the flow in three minutes without reading. Then explain one failure case to a beginner and why the chosen defense works.
+## Mastery gate
+Provide a flow diagram, documented expiry/consumption rules, and tests for valid verification, expiry, replay, and duplicate registration. Explain how local token delivery is prevented from leaking in a public deployment.
 
-## 10. Mastery gate
-You are ready to move on when you can draw the flow, define the key terms, defend the invariants, and show at least one positive and two negative tests or a documented test plan.
-
-## 11. Implementation status
-Flow design and tests to add during capstone milestone 3–4.
+## Implementation status
+This lesson defines the flow and acceptance tests. The capstone will implement it only after the identity model and password-storage decisions are understood.
