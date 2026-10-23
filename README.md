@@ -20,6 +20,8 @@ AuthMaster is a structured, hands-on curriculum for learning web authentication,
 
 ## Start here
 
+**New to the repo?** Follow the [chapter-by-chapter learning and teaching path](docs/35-chapter-by-chapter-learning-and-teaching-path.md). It reorganizes the material into 27 manageable chapters, with lesson-sized steps, diagrams, labs, mastery gates, and a progress tracker.
+
 1. Read the [complete learning map](docs/00-learning-map.md).
 2. Follow the [study and teaching method](docs/01-study-method.md).
 3. Learn [authentication fundamentals](docs/02-authentication-fundamentals.md) before writing authentication code.
