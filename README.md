@@ -1,153 +1,43 @@
-# AuthMaster — Learn Authentication Deeply
+# AuthMaster — Learn Authentication by Understanding It
 
-AuthMaster is a structured, hands-on curriculum for learning web authentication, authorization, browser security, identity protocols, testing, and incident response. It is designed for a learner who wants to understand the mechanisms deeply enough to implement a lab, review architecture, and teach another developer.
+A beginner-friendly, hands-on curriculum for web authentication, sessions, tokens, authorization, browser security, and modern identity protocols.
 
-> **Important:** This is an educational repository, not a production-ready identity platform. The sample API deliberately omits several controls required before real deployment. Read [the lab security notes](labs/session-auth-api/SECURITY-NOTES.md) before running or adapting it.
-
-## Learning outcomes
-
-- Explain identity, credentials, authentication, authorization, and the account lifecycle.
-- Understand HTTP, HTTPS, browser trust, cookies, CORS, CSRF, and XSS.
-- Use password-specific hashing and understand abuse prevention.
-- Build and inspect server-side sessions, rotation, expiry, logout, and revocation.
-- Understand JWT structure, claims, signature validation, and key management.
-- Explain refresh-token rotation, replay, reuse detection, and concurrency.
-- Enforce resource ownership, roles, and tenant isolation on the server.
-- Design verification, password recovery, MFA, and passkey flows.
-- Understand OAuth 2.0, OpenID Connect, Authorization Code + PKCE, state, and nonce.
-- Threat-model, test, debug, deploy, and respond to authentication incidents.
-- Teach each topic using diagrams, failure cases, and hands-on exercises.
+> **Learning rule:** understand the security property first, draw the request flow second, implement a small version third, and test failure cases before moving on.
 
 ## Start here
+1. Read [START-HERE.md](START-HERE.md).
+2. Follow the ordered [COURSE-MAP.md](COURSE-MAP.md).
+3. Complete the exercises and mastery gate in every chapter.
+4. Build progressively using [the capstone plan](projects/CAPSTONE.md).
+5. Track your progress in [the mastery checklist](teaching/MASTERY-CHECKLIST.md).
 
-**New to the repo?** Follow the [chapter-by-chapter learning and teaching path](docs/35-chapter-by-chapter-learning-and-teaching-path.md). It reorganizes the material into 27 manageable chapters, with lesson-sized steps, diagrams, labs, mastery gates, and a progress tracker.
+## The 20-chapter curriculum
 
-1. Read the [complete learning map](docs/00-learning-map.md).
-2. Follow the [study and teaching method](docs/01-study-method.md).
-3. Learn [authentication fundamentals](docs/02-authentication-fundamentals.md) before writing authentication code.
-4. Study [HTTP and browser security](docs/03-http-browser-security.md), then [password security](docs/04-password-security.md).
-5. Run the [session-auth API lab](labs/session-auth-api/README.md) locally.
-6. Read [lab security notes](labs/session-auth-api/SECURITY-NOTES.md) before adapting code.
-7. Track progress with the [mastery checklist](checklists/mastery-checklist.md) and [security review checklist](checklists/security-review.md).
-8. Use the [lesson template](teaching/lesson-template.md), [flashcards](teaching/flashcards.md), and [self-assessment quiz](teaching/quiz.md) to teach each concept back.
-
-## Curriculum
-
-The complete course index and an eight-week study plan are in the [learning map](docs/00-learning-map.md). Use the [complete course blueprint](docs/34-course-blueprint.md) for the standard lesson structure, detailed topic map, mastery ladder, and project workflow.
-
-| Stage | Topics | Main deliverable |
+| Phase | Chapters | Outcome |
 |---|---|---|
-| Foundations | Identity, HTTP, cookies, browser security | Explain a complete login request |
-| Passwords and sessions | Hashing, session rotation, logout | Run the local Express session lab |
-| Tokens | JWT validation, refresh rotation, revocation | Draw and test a token lifecycle |
-| Access control | Ownership, RBAC, tenant isolation | Write denied-access tests |
-| Account lifecycle | Verification, recovery, MFA, passkeys | Threat-model recovery |
-| Federation | OAuth 2.0, OIDC, PKCE | Review a provider flow |
-| Operations | Testing, deployment, debugging, incidents | Produce a security review with evidence |
-| Teaching | Glossary, flashcards, quiz, lesson plan | Teach concepts without memorized wording |
+| Foundations | 01–04 | Identity, HTTP, browser boundaries, data modeling |
+| Credentials and login | 05–07 | Password storage, registration, verification, login |
+| Sessions and tokens | 08–10 | Server sessions, JWT/access tokens, refresh/revocation |
+| Access and recovery | 11–13 | Authorization, account recovery, MFA/passkeys |
+| Federated identity | 14–15 | OAuth 2.0, OpenID Connect, PKCE |
+| Application engineering | 16–20 | React state, testing, threat modeling, operations, capstone |
 
 ## Repository map
+- `chapters/` — ordered lessons, flows, exercises, and mastery gates.
+- `teaching/` — lesson template and progress tracking.
+- `projects/` — progressive capstone requirements.
+- `resources/` — reference guidance.
 
-~~~text
-AuthMaster/
-├── docs/                         # Numbered chapters and deep dives
-├── labs/session-auth-api/        # Express + MongoDB session-auth lab
-│   ├── src/                      # App, routes, config, model
-│   ├── test/                     # Starter validation test and test plan
-│   ├── SECURITY-NOTES.md         # Explicit gaps and safe-use boundaries
-│   └── POSTMAN-EXAMPLES.md       # Local HTTP examples
-├── exercises/                    # Core, advanced, and week-by-week tasks
-├── diagrams/                     # Mermaid flow and trust-boundary diagrams
-├── teaching/                     # Lesson template, flashcards, quiz
-├── checklists/                   # Mastery and security review
-├── resources/                    # Standards and official documentation
-├── .github/workflows/            # Lightweight repository checks
-├── CONTRIBUTING.md
-└── SECURITY.md
-~~~
+## How to study
+1. Define each term in your own words.
+2. Draw the browser → API → trusted verifier/database flow.
+3. Trace one success path and one rejection path.
+4. Build the narrow lesson exercise.
+5. Test malformed, expired, replayed, and unauthorized inputs where relevant.
+6. Teach the flow back without reading your notes.
 
-## Lab quick start
+## Security note
+This repository is educational material, not a claim that a sample application is production-ready. Prefer actively maintained libraries and framework-supported mechanisms for password hashing, cryptography, session management, validation, and OAuth/OIDC. Never commit passwords, real tokens, private keys, or personal data. Use local development accounts and synthetic data.
 
-Requirements: Node.js 20+ and a local/development MongoDB instance.
-
-1. Open the [lab README](labs/session-auth-api/README.md).
-2. Copy the .env.example file to .env.
-3. Generate a random secret with:
-
-   ~~~bash
-   node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
-   ~~~
-
-4. Put the generated value in .env as SESSION_SECRET. Never commit .env.
-5. Set MONGODB_URI to a development database.
-6. From labs/session-auth-api, run npm install.
-7. Run npm run dev.
-8. Follow [the local HTTP examples](labs/session-auth-api/POSTMAN-EXAMPLES.md).
-9. Run npm test and read [the test plan](labs/session-auth-api/test/README.md).
-
-Do not use real credentials or expose the lab to the public internet. The automated suite covers credential validation, startup configuration, basic HTTP headers, malformed/oversized request bodies, and safe invalid-input responses. It does **not** prove the full authentication flow is secure.
-
-## Security principles
-
-- Never store plaintext passwords; use a maintained password-hashing library.
-- Use HTTPS in deployed environments.
-- Treat session IDs, passwords, reset tokens, and access/refresh tokens as secrets.
-- Enforce authorization on the backend for every protected operation.
-- A signed JWT is not encrypted by default; decoding is not verification.
-- CORS is not authentication and is not a complete CSRF defense.
-- Rate-limit login and registration; production limits need a shared store and monitoring.
-- Invalidate server-side session state on logout.
-- Test expired, revoked, malformed, replayed, and unauthorized requests—not only success.
-- Prefer a maintained identity provider when it is safer than implementing a protocol yourself.
-- Do not deploy the lab without adding the controls in [SECURITY-NOTES.md](labs/session-auth-api/SECURITY-NOTES.md) and obtaining an appropriate security review.
-
-## Study rhythm
-
-**Learn → define → draw → implement → test failure cases → explain → teach.**
-
-For every feature, answer:
-1. What problem does it solve?
-2. Which component makes the security decision?
-3. What state or credential is stored, and where?
-4. What happens on expiry, logout, replay, and failure?
-5. Which test proves the protection works?
-6. What risks remain?
-
-## Documentation and practice index
-
-- [Complete learning map](docs/00-learning-map.md)
-- [Official standards and documentation](resources/README.md)
-- [Mastery checklist](checklists/mastery-checklist.md)
-- [Security review checklist](checklists/security-review.md)
-- [Advanced scenario exercises](exercises/advanced-scenarios.md)
-- [Week-by-week project plan](exercises/week-by-week-projects.md)
-- [Lesson template](teaching/lesson-template.md)
-- [Flashcards](teaching/flashcards.md)
-- [Self-assessment quiz](teaching/quiz.md)
-- [Capstone project](docs/31-capstone-auth-service.md)
-- [Step-by-step code-first API tutorial](docs/33-build-auth-api-step-by-step.md)
-- [Contributing guide](CONTRIBUTING.md)
-- [Security policy](SECURITY.md)
-
-## License
-
-MIT for the educational materials and starter code in this repository. Third-party references remain the property of their respective owners.
-
-## Deep-dive learning system
-
-Each of the 15 foundational topics now has a dedicated `DEEP-DIVE.md` companion with lifecycle tracing, security invariants, implementation planning, failure patterns, test matrices, debugging steps, teach-back prompts, and retrieval questions.
-
-Start with the [mastery system](docs/35-master-learning-system.md), then study the [end-to-end reference architecture](docs/36-end-to-end-reference-architecture.md), [flow diagrams](diagrams/authentication-flow-diagrams.md), and [authentication glossary](docs/37-authentication-glossary-in-depth.md).
-
-### How to study each topic
-
-1. Read the chapter README and write down your current understanding.
-2. Draw the flow from memory and label every trust boundary.
-3. Implement a small local lab using maintained libraries.
-4. Test invalid, expired, replayed, unauthorized, concurrent, and dependency-failure cases where applicable.
-5. Complete the [teach-back rubric](teaching/teach-back-rubric.md) and revisit the [flashcards](teaching/spaced-repetition-flashcards.md) on a spaced schedule.
-6. Review the [production security gates](checklists/production-security-gates.md) before adapting educational code to a real service.
-
-> This is a substantial expansion milestone, not a claim that every topic is already a 1,000-line textbook or a production-ready implementation. Continue deepening chapters with runnable labs, line-by-line walkthroughs, and tested reference implementations. Correctness and useful depth matter more than padded line counts.
-
-For the next expansion milestone, see the [chapter-by-chapter textbook expansion roadmap](docs/38-chapter-expansion-roadmap.md). It defines the additional subchapters, labs, test coverage, and acceptance criteria needed to deepen each topic without padding it with repetitive text.
+## Rebuild status
+The new learning structure is being assembled on the `rebuild-authmaster` branch. The existing `main` branch is being kept unchanged while the rebuild is reviewed.
