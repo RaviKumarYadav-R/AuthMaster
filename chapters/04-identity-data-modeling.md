@@ -1,75 +1,85 @@
 # Chapter 04 — Identity Data Modeling
 
-## 1. Why this matters
-Model identity-related records before writing controllers. A weak data model can cause duplicate accounts, token replay, privilege confusion, and accidental data exposure.
+## Why this matters
+Authentication bugs often begin as data-model bugs: duplicate accounts, tokens that can be replayed, sessions that cannot be revoked, or user-controlled IDs being treated as trusted ownership. A model should make safe states easy to represent and unsafe states hard to create.
 
-## 2. Learning outcomes
-By the end, you should be able to:
-- Explain the core vocabulary in plain language.
-- Draw the end-to-end flow and identify trust boundaries.
-- State the security invariants this design must preserve.
-- Propose tests for both successful and rejected requests.
+## Learning outcomes
+- Separate account identity from credentials and active sessions.
+- Explain why internal IDs and normalized login identifiers serve different purposes.
+- Model one-time verification and recovery tokens.
+- Identify unique indexes and state transitions that need atomicity.
 
-## 3. Vocabulary to learn
-- **users:** define this term in your own words and connect it to the flow.
-- **credentials:** define this term in your own words and connect it to the flow.
-- **sessions:** define this term in your own words and connect it to the flow.
-- **verification tokens:** define this term in your own words and connect it to the flow.
-- **password-reset tokens:** define this term in your own words and connect it to the flow.
-- **roles:** define this term in your own words and connect it to the flow.
-- **memberships:** define this term in your own words and connect it to the flow.
-- **audit events:** define this term in your own words and connect it to the flow.
+## Core vocabulary
+| Concept | Meaning | Design question |
+|---|---|---|
+| User/principal | Internal identity record | What is the stable internal ID? |
+| Identifier | Value used to find an account | Is email normalization consistent? |
+| Credential | Evidence used to authenticate | What is stored, and how is it verified? |
+| Session | A current authenticated interaction | How can it expire or be revoked? |
+| One-time token | Temporary proof for one action | How is replay prevented? |
+| Membership | User's relationship to an organization/tenant | Can membership be revoked independently? |
+| Audit event | Security-relevant record of an action | What is safe and useful to record? |
 
-## 4. Mental model
-Treat this feature as a sequence of explicit decisions, not a magic library call. Identify what the browser sends, what the server verifies, what state is stored, and what the server returns. The analogy you choose must not replace the actual protocol and library documentation.
-
-## 5. Flow to draw
+## A conceptual data model
 ```text
-Client / Browser
-      |
-      | request or redirect
-      v
-Backend / trusted client
-      |
-      +--> validate inputs and protocol state
-      +--> verify credential / identity / policy
-      +--> read or update durable state
-      |
-      v
-Response, denial, or safe recovery path
+User
+  |--< Session
+  |--< VerificationToken
+  |--< RecoveryToken
+  |--< Membership >-- Tenant
+  |--< AuditEvent (actor reference)
 ```
 
-Adapt this diagram to the chapter. Label every request, response, trust boundary, stored secret, expiry, and rejection path. It is a starting sketch, not a complete protocol sequence.
+This diagram shows relationships, not a complete schema. A document database may embed some fields while a relational database may use separate tables. Choose based on query patterns and consistency requirements.
 
-## 6. Security invariants
-- User ID is stable and internal.
-- Normalized identifiers have deliberate uniqueness rules.
-- Secrets are stored only in safe representations.
-- One-time tokens expire and are consumed atomically.
-- Tenant membership is explicit.
+### Example field responsibilities
+- **User:** stable internal ID, normalized identifier, password hash if password login is enabled, verification state, timestamps, and account status.
+- **Session:** safe session-ID representation, user reference, creation/expiry times, and revocation metadata.
+- **Verification/recovery token:** safe token representation, user reference, expiry, consumption time, and purpose.
+- **Membership:** user reference, tenant reference, role or attributes, and status.
+- **Audit event:** event type, timestamp, actor reference when known, outcome, and carefully redacted context.
 
-## 7. Practice
-Draw a schema for users, sessions, and verification tokens. Explain which fields need unique indexes. Identify what should never be returned by an API. Add tests for duplicate identifiers and token reuse.
+Never return password hashes, raw session identifiers, raw recovery tokens, or MFA shared secrets in ordinary API responses. Avoid logging them.
 
-### Builder exercise
-Create a small artifact: a sequence diagram, data model, test matrix, configuration checklist, or local implementation appropriate to this chapter. State its assumptions and do not include real credentials.
+## Normalize identifiers carefully
+If an email is used as a login identifier, define one normalization policy and apply it consistently during registration and login. Do not invent provider-specific transformations such as removing dots from addresses unless the provider explicitly guarantees those semantics. Enforce uniqueness in the database, not only with a pre-insert lookup: two concurrent requests can both pass a prior lookup.
 
-### Breaker exercise
-Choose at least two failure cases relevant to the chapter. For each, write: input or event, expected server behavior, expected data change (if any), and how the test proves the security invariant.
+## Model token lifecycle explicitly
+A one-time token should have a clear purpose, expiry, and consumption state. Its transition is conceptually:
 
-## 8. Review questions
-1. What problem does this mechanism solve, and what does it not solve?
-2. Which component is trusted to verify the relevant evidence?
-3. What state is stored, and what is the expiry or revocation strategy?
-4. What is one realistic failure or abuse case?
-5. How would you test that the backend denies the unsafe action?
-6. Which decision depends on your framework or deployment, and where will you verify the current guidance?
+```text
+created -> issued -> consumed
+    |         |
+    +-------> expired
+```
 
-## 9. Teach-back
-Explain the flow in three minutes without reading. Then explain one failure case to a beginner and why the chosen defense works.
+A consumed or expired token must not become valid again. Where concurrent requests are possible, consume it atomically (for example, an update that succeeds only when the token is still unused and unexpired). Store a safe representation rather than a raw bearer secret when the design allows it.
 
-## 10. Mastery gate
-You are ready to move on when you can draw the flow, define the key terms, defend the invariants, and show at least one positive and two negative tests or a documented test plan.
+## Model invariants
+1. An account's internal ID does not change when its email or username changes.
+2. Unique identifiers are protected by a database constraint/index.
+3. A token is bound to one purpose and one account.
+4. A token can be consumed at most once.
+5. Expired or revoked sessions are rejected by the server.
+6. Tenant membership and role are verified server-side.
+7. Public response DTOs expose only fields the client needs.
 
-## 11. Implementation status
-A schema sketch and a written list of invariants; no claim that a production schema is implemented.
+## Practice lab
+1. Draw a schema for users, sessions, verification tokens, recovery tokens, tenants, and memberships.
+2. Mark every field that must be unique, indexed, secret, or returned publicly.
+3. Explain what happens if two users register the same email at almost the same time.
+4. Write pseudocode for atomically consuming a verification token.
+5. Create a test matrix for duplicate registration, expired token, replayed token, revoked session, and cross-tenant access.
+
+## Review questions
+- Why should a session usually be modeled separately from a user?
+- Why is a unique database constraint necessary even if application code checks first?
+- Why should verification and recovery tokens have distinct purposes?
+- What information should an audit log exclude?
+- How can a membership change affect authorization for an existing session?
+
+## Mastery gate
+Submit a data diagram, a list of invariants, and tests for duplicate identifiers, token replay, and revoked sessions. Explain which constraints are enforced by the database and which are enforced by application logic.
+
+## Implementation status
+This chapter defines a design exercise. The capstone schema is introduced incrementally; no production schema is implied here.
