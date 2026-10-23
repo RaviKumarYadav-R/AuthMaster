@@ -2,6 +2,10 @@
 
 This is the main route through AuthMaster. Read in order, but revisit chapters when a later implementation exposes a gap. Use the [complete course blueprint](34-course-blueprint.md) to understand the required depth, section structure, mastery ladder, and expected deliverables for every topic. The time estimates are flexible study suggestions, not guarantees.
 
+## Recommended beginner-friendly route
+
+If the list below feels too large, use the [chapter-by-chapter learning and teaching path](35-chapter-by-chapter-learning-and-teaching-path.md). It groups the existing documents into 27 ordered chapters and gives you a repeatable learn → draw → trace → build → test → teach routine. You do not need to read every file at once.
+
 ## The full chapter index
 
 | Chapter | Topic | Main outcome |
